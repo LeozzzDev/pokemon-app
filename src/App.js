@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import axios from "axios";
+import "./App.css";
 
 function App() {
+  const pokemonBackendApi = "http://localhost:5000/pokemon";
+  const [pokemon, setPokemon] = useState("");
+  const [data, setData] = useState("");
+
+  const getPokemonData = async () => {
+    let pokemonApiResponse = await axios.get(`${pokemonBackendApi}/${pokemon}`);
+    setData(JSON.stringify(pokemonApiResponse.data));
+  };
+
+  const cleanTextArea = () => setData("");
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="box-wrapper">
+        <input
+          type="text"
+          onChange={(e) => {
+            setPokemon(e.target.value);
+            cleanTextArea();
+          }}
+        />
+        <button onClick={getPokemonData}>Get Translation</button>
+      </div>
+
+      <textarea value={data} onChange={getPokemonData}></textarea>
     </div>
   );
 }
